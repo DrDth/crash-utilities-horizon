@@ -6,9 +6,9 @@ publish = false
 license = "MIT"
 
 [dependencies]
-# While the mod needs horizon-rust/horizon#19041, #19048 and #19052, it builds inside a Horizon
-# checkout that has them, from `.local/dev-mods/crash_utilities` (see README.md); once a Nightly
-# has them, this becomes the pinned SDK path `cargo horizon-mod` writes.
+# Until a Nightly has horizon-rust/horizon#19041, #19048 (merged) and #19052, the mod builds
+# inside a Horizon checkout that has them, from `.local/dev-mods/crash_utilities` (see
+# README.md); then this becomes the pinned SDK path `cargo horizon-mod` writes.
 horizon-mod-api = { path = "../../../crates/horizon-mod-api" }
 # `/cu entities remove regex`: Java's `String.matches`.
 regex = { version = "1", default-features = false, features = ["std", "unicode"] }

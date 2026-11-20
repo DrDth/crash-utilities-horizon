@@ -51,12 +51,11 @@ These need parts Horizon's mod API doesn't have yet:
 
 ## Building
 
-The mod needs three additions to Horizon's mod API:
-[horizon-rust/horizon#19041](https://github.com/horizon-rust/horizon/pull/19041) (command words with uppercase
-letters: `callItemClear`, `entityData`, `byType`),
-[#19048](https://github.com/horizon-rust/horizon/pull/19048) (the block entities in a box) and
-[#19052](https://github.com/horizon-rust/horizon/pull/19052) (removing a block entity and keeping its block). Until a
-Horizon release has them, build the mod inside a Horizon checkout that does:
+The mod needs three additions to Horizon's mod API: command words with uppercase letters (`callItemClear`,
+`entityData`, `byType`; [horizon-rust/horizon#19041](https://github.com/horizon-rust/horizon/pull/19041)) and the
+block entities in a box ([#19048](https://github.com/horizon-rust/horizon/pull/19048)), both merged, and removing a
+block entity while keeping its block ([#19052](https://github.com/horizon-rust/horizon/pull/19052)). Until a Horizon
+release has them all, build the mod inside a Horizon checkout that does:
 
 ```sh
 mkdir -p <horizon>/.local/dev-mods/crash_utilities
