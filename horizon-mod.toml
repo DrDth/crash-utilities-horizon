@@ -1,0 +1,8 @@
+id = "crashutilities"
+name = "Crash Utilities"
+version = "9.0.4-horizon.1"
+description = "Commands for debugging and fixing modded worlds: count and remove entities, look into and fix player inventories, teleport players, clear dropped items on a timer."
+authors = ["Darkere (original mod)", "DrDth (Horizon port)"]
+api = "0.2"
+side = "server"
+capabilities = ["registries"]
