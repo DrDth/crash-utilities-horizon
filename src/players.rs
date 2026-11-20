@@ -37,7 +37,7 @@ fn teleport(host: &mut dyn ServerHost, player: PlayerRef, level: LevelRef, mut p
 
 /// `BlockPosArgument.getLoadedBlockPos`, against the source's level: the position, or the
 /// translation key of the argument's error.
-fn loaded(
+pub(crate) fn loaded(
     host: &mut dyn ServerHost,
     level: LevelRef,
     pos: [i32; 3],

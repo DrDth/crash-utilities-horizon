@@ -7,6 +7,7 @@ use mod_api::{
     Command, CommandArgumentValue, CommandInvocation, CommandSource, LevelRef, ServerHost, Text,
 };
 
+use crate::block_entities;
 use crate::entities::{self, Removal};
 use crate::players;
 use crate::text::send;
@@ -15,6 +16,15 @@ use crate::text::send;
 const ROOTS: [&str; 2] = ["crashutilities", "cu"];
 /// `EntitiesCommands` (`e`) and its redirects.
 const ENTITIES: [&str; 3] = ["e", "entities", "entity"];
+/// `TileEntitiesCommands` (`blockentity`) and its redirects.
+const BLOCK_ENTITIES: [&str; 6] = [
+    "blockentity",
+    "te",
+    "tileentities",
+    "tileentity",
+    "be",
+    "blockentities",
+];
 /// `InventoryCommands` (`i`) and its redirect.
 const INVENTORY: [&str; 2] = ["i", "inventory"];
 /// `CommandUtils.PERMISSION_LEVEL`.
@@ -22,6 +32,8 @@ const LEVEL: u8 = 2;
 
 /// An entity type argument: `ResourceLocationArgument.id()` with the entity types suggested.
 const ENTITY_TYPE: &str = "resource:minecraft:entity_type";
+/// A block entity type argument, likewise.
+const BLOCK_ENTITY_TYPE: &str = "resource:minecraft:block_entity_type";
 
 /// Every usage of the command.
 pub fn usages() -> Vec<Command> {
@@ -48,6 +60,15 @@ pub fn usages() -> Vec<Command> {
             "remove regex <regex:text>".to_owned(),
         ] {
             rest.push(format!("{e} {usage}"));
+        }
+    }
+    for b in BLOCK_ENTITIES {
+        for usage in [
+            "entityData [dim:dimension]".to_owned(),
+            format!("find <res:{BLOCK_ENTITY_TYPE}> [dim:dimension]"),
+            "delete <pos:block_pos>".to_owned(),
+        ] {
+            rest.push(format!("{b} {usage}"));
         }
     }
     for i in INVENTORY {
@@ -108,6 +129,9 @@ pub enum Run {
     EntityList(Option<LevelRef>),
     EntityFind(String, Option<LevelRef>),
     EntityRemove(Removal),
+    BlockEntityList(Option<LevelRef>),
+    BlockEntityFind(String, Option<LevelRef>),
+    BlockEntityDelete([i32; 3]),
     InventoryRead(String),
     InventoryRemove(String, String, i32),
 }
@@ -164,6 +188,15 @@ pub fn parse(command: &CommandInvocation) -> Option<Run> {
             )),
             ["remove", "hostile"] => Run::EntityRemove(Removal::Hostile),
             ["remove", "regex"] => Run::EntityRemove(Removal::Regex(string(command, "regex")?)),
+            _ => return None,
+        },
+        [b, rest @ ..] if BLOCK_ENTITIES.contains(b) => match rest {
+            ["entityData"] => Run::BlockEntityList(dimension(command, "dim")),
+            ["find"] => Run::BlockEntityFind(string(command, "res")?, dimension(command, "dim")),
+            ["delete"] => match command.argument("pos")? {
+                CommandArgumentValue::BlockPos(pos) => Run::BlockEntityDelete(*pos),
+                _ => return None,
+            },
             _ => return None,
         },
         [i, rest @ ..] if INVENTORY.contains(i) => match rest {
@@ -235,6 +268,20 @@ pub fn run(
             entities::find(host, &levels, &kind, &source);
         }
         Run::EntityRemove(removal) => entities::remove(host, removal),
+        Run::BlockEntityList(level) => {
+            let levels = levels(host, level);
+            block_entities::list(host, &levels);
+        }
+        Run::BlockEntityFind(kind, level) => {
+            let levels = levels(host, level);
+            let source = source_name(host, source);
+            block_entities::find(host, &levels, &kind, &source);
+        }
+        Run::BlockEntityDelete(pos) => {
+            if let Some(level) = command.dimension.id(host).and_then(|id| host.level(&id)) {
+                block_entities::delete(host, level, pos);
+            }
+        }
         Run::InventoryRead(name) => players::read(host, &name),
         Run::InventoryRemove(name, kind, slot) => players::remove(host, &name, &kind, slot),
     }

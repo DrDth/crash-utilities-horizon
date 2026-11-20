@@ -2,8 +2,9 @@
 //! what breaks a modded world, and an item clear on a timer.
 //!
 //! A port of Darkere's Crash Utilities (MIT), from its 1.21.1 sources (9.0.4, the version All the
-//! Mods 10 ships). This part holds the server commands the mod API carries: entities, player
-//! teleports and inventories of players online, the item clear and help.
+//! Mods 10 ships). This part holds the server commands the mod API carries: entities, block
+//! entities, player teleports and inventories of players online, the item clear and help.
+mod block_entities;
 mod commands;
 mod config;
 mod entities;

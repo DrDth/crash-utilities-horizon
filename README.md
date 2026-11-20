@@ -11,6 +11,9 @@ Operators (level 2) get `/crashutilities`, or `/cu`, to find and fix what breaks
 - `/cu entities remove` removes entities: all without a custom name, `<type>` or `byType <type>`, `items`
   (`items <name> force` those whose name holds `<name>`), `hostile` (monsters without a custom name), or
   `regex <regex>` (types whose id matches).
+- `/cu blockentity entityData [dim]` counts the loaded block entities by type; `/cu blockentity find <type> [dim]`
+  lists where they are, with a teleport there on a click; `/cu blockentity delete <pos>` removes the block entity at
+  a position and leaves its block, for one whose tick crashes the world.
 - `/cu inventory read <player>` lists a player's offhand, armor and inventory; a click on a slot puts
   `/cu inventory remove <player> <slotType> <slot>` into the chat field, which empties it.
 - `/cu tp <player> <pos> [dim]` and `/cu tp <player> <otherPlayer>` move a player, `/cu unstuck <player>` sends
@@ -20,13 +23,13 @@ Operators (level 2) get `/crashutilities`, or `/cu`, to find and fix what breaks
   runs a check now.
 - `/cu help`.
 
-`entities`, `entity` and `e` are the same command, as are `inventory` and `i`. The mod is server side only.
+`entities`, `entity` and `e` are the same command; so are `blockentity`, `blockentities`, `tileentity`,
+`tileentities`, `te` and `be`, and `inventory` and `i`. The mod is server side only.
 
 ## Not yet ported
 
 These need parts Horizon's mod API doesn't have yet:
 
-- `/cu blockentity` (`te`, `be`...): listing and removing block entities.
 - `/cu chunks`: chunk load states and tickets.
 - `/cu activity`: when players were last online.
 - `/cu memoryCheck` and the memory checker.
@@ -48,9 +51,12 @@ These need parts Horizon's mod API doesn't have yet:
 
 ## Building
 
-`cu callItemClear`, `entityData` and `byType` need command words with uppercase letters, added to Horizon in
-[horizon-rust/horizon#19041](https://github.com/horizon-rust/horizon/pull/19041). Until a Horizon release has it,
-build the mod inside a Horizon checkout that does:
+The mod needs three additions to Horizon's mod API:
+[horizon-rust/horizon#19041](https://github.com/horizon-rust/horizon/pull/19041) (command words with uppercase
+letters: `callItemClear`, `entityData`, `byType`),
+[#19048](https://github.com/horizon-rust/horizon/pull/19048) (the block entities in a box) and
+[#19052](https://github.com/horizon-rust/horizon/pull/19052) (removing a block entity and keeping its block). Until a
+Horizon release has them, build the mod inside a Horizon checkout that does:
 
 ```sh
 mkdir -p <horizon>/.local/dev-mods/crash_utilities
